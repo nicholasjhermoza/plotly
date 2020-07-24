@@ -1,27 +1,33 @@
 function getPlots(id) {
-    //Read samples.json
+    //Use the D3 library to read in `samples.json`.
         d3.json("samples.json").then (sampledata =>{
-            console.log(sampledata)
-            var ids = sampledata.samples[0].otu_ids;
+            // console.log(sampledata)
+            var result = sampledata.samples.filter(x => x.id.toString() === id)[0];
+            console.log(result)
+            var ids = result.otu_ids;
             console.log(ids)
-            var sampleValues =  sampledata.samples[0].sample_values.slice(0,10).reverse();
+            var sampleValues =  result.sample_values.slice(0,10).reverse();
             console.log(sampleValues)
-            var labels =  sampledata.samples[0].otu_labels.slice(0,10);
+            var labels =  result.otu_labels.slice(0,10);
             console.log (labels)
-        // get only top 10 otu ids for the plot OTU and reversing it. 
-            var OTU_top = ( sampledata.samples[0].otu_ids.slice(0, 10)).reverse();
+
+//Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual.
+
+
+        // get only top 10 and reverse it. 
+            var OTU_top = ( result.otu_ids.slice(0, 10)).reverse();
         // get the otu id's to the desired form for the plot
             var OTU_id = OTU_top.map(d => "OTU " + d);
             console.log(`OTU IDS: ${OTU_id}`)
-         // get the top 10 labels for the plot
-            var labels =  sampledata.samples[0].otu_labels.slice(0,10);
+         // label top 10
+            var labels =  result.otu_labels.slice(0,10);
             console.log(`OTU_labels: ${labels}`)
             var trace = {
                 x: sampleValues,
                 y: OTU_id,
                 text: labels,
                 marker: {
-                color: 'blue'},
+                color: 'orange'},
                 type:"bar",
                 orientation: "h",
             };
@@ -46,14 +52,14 @@ function getPlots(id) {
         Plotly.newPlot("bar", data, layout);
             // The bubble chart
             var trace1 = {
-                x: sampledata.samples[0].otu_ids,
-                y: sampledata.samples[0].sample_values,
+                x: result.otu_ids,
+                y: result.sample_values,
                 mode: "markers",
                 marker: {
-                    size: sampledata.samples[0].sample_values,
-                    color: sampledata.samples[0].otu_ids
+                    size: result.sample_values,
+                    color: result.otu_ids
                 },
-                text:  sampledata.samples[0].otu_labels
+                text:  result.otu_labels
     
             };
     
@@ -91,7 +97,7 @@ function getPlots(id) {
     
          // grab the necessary demographic data data for the id and append the info to the panel
             Object.entries(result).forEach((key) => {   
-                demographicInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");    
+                demographicInfo.append("h5").text(key)[0];    
             });
         });
     }
